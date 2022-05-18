@@ -1,45 +1,58 @@
-import React, { useState } from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { GrTrash, GrUpdate } from "react-icons/gr";
 
-const Todo = ({ setUpdateItem, setDeleteItem, todo }) => {
-  const [click, setClick] = useState(false);
-  const { id, title, description } = todo;
+const Todo = ({ setUpdateItem, setDeleteItem, todo, refetch }) => {
+  const { _id, title, description, isComplete } = todo;
+  const [click, setClick] = useState(isComplete);
+  console.log(todo);
+  useEffect(() => {
+    const fetch = async () => {
+      const { data } = await axios.put("http://localhost:5000/todo", {
+        id: _id,
+        isComplete: click,
+      });
+      if (data.matchedCount) {
+        refetch();
+      }
+    };
+    fetch();
+  }, [click, setClick, _id, refetch]);
   return (
     <div className="flex items-center">
       <input
         onClick={() => {
           setClick(!click);
-          console.log(id);
         }}
         type="checkbox"
-        checked={click}
+        checked={isComplete}
         className="checkbox mr-3 border border-base-300 bg-base-100 rounded-box"
       />
-      <div class="collapse border border-base-300 bg-base-100 rounded-box ">
-        <input className="" type="checkbox" />
+      <div className="collapse w-96 border border-base-300 bg-base-100 rounded-box ">
+        <input type="checkbox" />
         <div
           className={`collapse-title text-xl font-medium ${
-            click ? "line-through" : ""
+            isComplete ? "line-through" : ""
           }`}
         >
           {title}
         </div>
-        <div class="collapse-content ">
+        <div className="collapse-content ">
           <p>{description}</p>
         </div>
       </div>
       <div className="flex ml-3 gap-x-3 ">
         <label
           onClick={() => setUpdateItem(todo)}
-          for="update-modal"
-          class="btn btn-circle btn-outline btn-warning"
+          htmlFor="update-modal"
+          className="btn btn-circle btn-outline btn-warning"
         >
           <GrUpdate />
         </label>
         <label
           onClick={() => setDeleteItem(todo)}
-          for="delete-modal"
-          class="btn modal-button btn-circle  btn-outline text-red-700 hover:bg-red-700 hover:border-red-700 "
+          htmlFor="delete-modal"
+          className="btn modal-button btn-circle  btn-outline text-red-700 hover:bg-red-700 hover:border-red-700 "
         >
           <GrTrash />
         </label>
