@@ -1,35 +1,56 @@
-import React from "react";
+import axios from "axios";
+import React, { useRef } from "react";
 
-const AddToDoModal = ({ setOpenAddModal }) => {
+const AddToDoModal = ({ refetch, setOpenAddModal }) => {
+  const titleRef = useRef();
+  const descriptionRef = useRef();
+
+  const handleAddTodo = async () => {
+    try {
+      const todoData = {
+        title: titleRef.current.value,
+        description: descriptionRef.current.value,
+        isComplete: false,
+      };
+      const { data } = await axios.post(`http://localhost:5000/todo`, {
+        todoData,
+      });
+      if (data.insertedId) {
+        refetch();
+        setOpenAddModal(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
-      <input type="checkbox" id="add-modal" class="modal-toggle" />
-      <div class="modal">
-        <div class=" ">
-          <div class="card w-96 bg-accent shadow-xl">
-            <div class="card-body">
+      <input type="checkbox" id="add-modal" className="modal-toggle" />
+      <div className="modal">
+        <div className=" ">
+          <div className="card w-96 bg-accent shadow-xl">
+            <div className="card-body">
               <input
+                ref={titleRef}
                 type="text"
                 placeholder="todo name"
                 required
-                class="input input-bordered w-full max-w-xs"
+                className="input input-bordered w-full max-w-xs"
               />
               <textarea
-                class="textarea textarea-bordered h-24"
+                ref={descriptionRef}
+                className="textarea textarea-bordered h-24"
                 placeholder="Description"
               ></textarea>
-              <div class="modal-action justify-center">
+              <div className="modal-action justify-center">
                 <label
-                  //   onClick={() => setOpenAddModal(false)}
+                  onClick={handleAddTodo}
                   type="submit"
-                  class="btn btn-sm  btn-secondary"
+                  className="btn btn-sm  btn-secondary"
                 >
                   Add
                 </label>
-                <label
-                  htmlFor="add-modal"
-                  class="btn btn-sm  btn-ghost"
-                >
+                <label htmlFor="add-modal" className="btn btn-sm  btn-ghost">
                   Cancel
                 </label>
               </div>
