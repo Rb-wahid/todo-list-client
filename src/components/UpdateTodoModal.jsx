@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const UpdateTodoModal = ({
   refetch,
@@ -23,10 +24,19 @@ const UpdateTodoModal = ({
         description: updateDescription,
         isComplete: false,
       };
-      const { data } = await axios.put(`http://localhost:5000/todo/update`, {
+      const { data } = await axios.put(`https://arcane-depths-69379.herokuapp.com/todo/update`, {
         todoData,
       });
       if (data.modifiedCount) {
+        toast.success("Successfully updated", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         refetch();
         setUpdateItem({});
       }

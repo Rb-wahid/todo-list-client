@@ -1,15 +1,27 @@
 import axios from "axios";
 import React from "react";
+import { toast } from "react-toastify";
 
 const ConfirmDeleteModal = ({ setDeleteItem, refetch, deleteItem }) => {
   const handleDeleteTodo = async () => {
     try {
       const { data } = await axios.delete(
-        `http://localhost:5000/todo/${deleteItem._id}`
+        `https://arcane-depths-69379.herokuapp.com/todo/${deleteItem._id}`
       );
 
-      if (data.deletedCount) refetch();
-      setDeleteItem({});
+      if (data.deletedCount) {
+        toast.success("Successfully deleted", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        refetch();
+        setDeleteItem({});
+      }
     } catch (error) {
       console.log(error);
     }

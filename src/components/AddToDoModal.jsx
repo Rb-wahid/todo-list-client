@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useRef } from "react";
+import { toast } from "react-toastify";
 
 const AddToDoModal = ({ refetch, setOpenAddModal }) => {
   const titleRef = useRef();
@@ -12,10 +13,19 @@ const AddToDoModal = ({ refetch, setOpenAddModal }) => {
         description: descriptionRef.current.value,
         isComplete: false,
       };
-      const { data } = await axios.post(`http://localhost:5000/todo`, {
+      const { data } = await axios.post(`https://arcane-depths-69379.herokuapp.com/todo`, {
         todoData,
       });
       if (data.insertedId) {
+        toast.success("Successfully added", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
         refetch();
         setOpenAddModal(false);
       }

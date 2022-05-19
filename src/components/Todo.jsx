@@ -1,29 +1,40 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { GrTrash, GrUpdate } from "react-icons/gr";
+import { toast } from "react-toastify";
 
 const Todo = ({ setUpdateItem, setDeleteItem, todo, refetch }) => {
   const { _id, title, description, isComplete } = todo;
   const [click, setClick] = useState(isComplete);
-  console.log(todo);
-  useEffect(() => {
-    const fetch = async () => {
-      const { data } = await axios.put("http://localhost:5000/todo", {
+
+  const handleClick = async () => {
+    const { data } = await axios.put(
+      "https://arcane-depths-69379.herokuapp.com/todo",
+      {
         id: _id,
-        isComplete: click,
-      });
-      if (data.matchedCount) {
-        refetch();
+        isComplete: !click,
       }
-    };
-    fetch();
-  }, [click, setClick, _id, refetch]);
+    );
+    if (data.matchedCount) {
+      refetch();
+    }
+    if (!click) {
+      toast.success("Task Completed", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
+    }
+    setClick(!click);
+  };
   return (
     <div className="flex items-center">
       <input
-        onClick={() => {
-          setClick(!click);
-        }}
+        onClick={handleClick}
         type="checkbox"
         checked={isComplete}
         className="checkbox mr-3 border border-base-300 bg-base-100 rounded-box"
