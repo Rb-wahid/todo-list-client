@@ -11,7 +11,7 @@ const Home = () => {
   const [updateItem, setUpdateItem] = useState({});
   const { data: todos = [], refetch } = useFetch(
     ["todo"],
-    "http://localhost:5000/todo"
+    "https://arcane-depths-69379.herokuapp.com/todo"
   );
 
   return (
